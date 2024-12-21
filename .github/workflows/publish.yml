@@ -1,5 +1,6 @@
 name: "Publish"
 
+# Trigger on push to main branch or manual dispatch
 on:
   workflow_dispatch:
   push:
