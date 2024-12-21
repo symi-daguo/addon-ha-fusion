@@ -57,6 +57,8 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}-aarch64
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            BUILD_FROM=ghcr.io/home-assistant/aarch64-base:3.19
 
       - name: Build and push amd64 image
         uses: docker/build-push-action@v5
@@ -66,6 +68,8 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}-amd64
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            BUILD_FROM=ghcr.io/home-assistant/amd64-base:3.19
 
       - name: Build and push armv7 image
         uses: docker/build-push-action@v5
@@ -74,4 +78,6 @@ jobs:
           platforms: linux/arm/v7
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}-armv7
-          labels: ${{ steps.meta.outputs.labels }} 
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            BUILD_FROM=ghcr.io/home-assistant/armv7-base:3.19 
