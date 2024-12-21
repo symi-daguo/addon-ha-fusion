@@ -35,4 +35,4 @@ ports:
   8099/tcp: null
 
 # docker hub
-image: symi-daguo/addon-ha-fusion-{arch}
+image: ghcr.io/symi-daguo/addon-ha-fusion-{arch}
