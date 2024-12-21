@@ -20,6 +20,7 @@ jobs:
     permissions:
       contents: read
       packages: write
+      id-token: write
 
     steps:
       - name: Checkout repository
@@ -38,24 +39,25 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata (tags, labels) for Docker
+      - name: Extract Docker metadata
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=ref,event=branch
-            type=ref,event=pr
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value={{date 'YYYY.MM.DD'}}
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
+            type=sha
 
       - name: Build and push aarch64 image
         uses: docker/build-push-action@v5
         with:
           context: .
           platforms: linux/arm64
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}-aarch64
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ github.repository }}-aarch64:${{ github.ref_name }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             BUILD_FROM=ghcr.io/home-assistant/aarch64-base:3.19
@@ -65,8 +67,8 @@ jobs:
         with:
           context: .
           platforms: linux/amd64
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}-amd64
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ github.repository }}-amd64:${{ github.ref_name }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             BUILD_FROM=ghcr.io/home-assistant/amd64-base:3.19
@@ -76,8 +78,8 @@ jobs:
         with:
           context: .
           platforms: linux/arm/v7
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}-armv7
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ github.repository }}-armv7:${{ github.ref_name }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             BUILD_FROM=ghcr.io/home-assistant/armv7-base:3.19 
