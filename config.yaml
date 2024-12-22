@@ -32,4 +32,4 @@ ports_description:
 environment:
   TZ: "Asia/Shanghai"
   HASS_URL: "http://supervisor/core"
-image: "{username}/addon-ha-fusion-{arch}"
+image: "ghcr.io/symi-daguo/ha-fusion-{arch}"
