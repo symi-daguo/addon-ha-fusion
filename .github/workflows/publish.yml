@@ -5,6 +5,8 @@ on:
   workflow_dispatch:
   push:
     branches: ["main"]
+    tags:
+      - "20[0-9][0-9].[0-9]+.[0-9]+"
 
 jobs:
   publish:
@@ -19,10 +21,16 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Get version
+        id: version
+        run: |
+          version="2024.12.0"
+          echo "version=${version}" >> $GITHUB_OUTPUT
       - name: Publish
         uses: home-assistant/builder@master
         with:
           args: |
             --all \
             --target /data \
-            --docker-hub ghcr.io/symi-daguo
+            --docker-hub ghcr.io/symi-daguo \
+            --version ${{ steps.version.outputs.version }}
