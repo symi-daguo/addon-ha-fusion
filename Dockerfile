@@ -1,42 +1,38 @@
+# ha base image
+ARG BUILD_FROM
+
 # first stage, can't use alpine for building armv7
 FROM node:22 AS builder
 WORKDIR /app
 
-# Install build dependencies
-RUN apt-get update && apt-get install -y git && \
-    git clone --depth 1 https://github.com/symi-daguo/ha-fusion . && \
+# clone, build and remove repo example data
+RUN git clone --depth 1 https://github.com/symi-daguo/ha-fusion . && \
     npm install --verbose && \
     npm run build && \
-    npm prune --omit=dev
+    npm prune --omit=dev && \
+    rm -rf ./data/*
 
 # second stage
-FROM node:22-alpine
-WORKDIR /app
+FROM $BUILD_FROM
+WORKDIR /rootfs
 
-# copy files to /app
+# copy files to /rootfs
 COPY --from=builder /app/build ./build
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/server.js .
 COPY --from=builder /app/package.json .
 
-# copy run script
+# copy run
 COPY run.sh /
-RUN chmod a+x /run.sh
+
+# install node, symlink persistent data and chmod run
+RUN apk add --no-cache nodejs-current && \
+    ln -s /rootfs/data /data && \
+    chmod a+x /run.sh
 
 # set environment
-ENV PORT=5050 \
+ENV PORT=8099 \
     NODE_ENV=production \
-    ADDON=true \
-    TZ=Asia/Shanghai \
-    HOST=0.0.0.0 \
-    HASS_URL=http://supervisor/core
+    ADDON=true
 
-# Labels
-LABEL \
-    io.hass.name="Fusion" \
-    io.hass.description="A modern, easy-to-use and performant custom Home Assistant dashboard" \
-    io.hass.type="addon" \
-    io.hass.version="2024.12.1" \
-    maintainer="symi-daguo"
-
-CMD ["/run.sh"]
+CMD [ "/run.sh" ]
