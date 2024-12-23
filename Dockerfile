@@ -2,15 +2,13 @@
 FROM node:22 AS builder
 WORKDIR /app
 
-# Install build dependencies
-RUN apk add --no-cache git
+# copy all files
+COPY . .
 
-# clone and build
-RUN git clone --depth 1 -b v2024.12.1 https://github.com/symi-daguo/ha-fusion . && \
-    npm install --verbose && \
+# install, build and prune
+RUN npm install --verbose && \
     npm run build && \
-    npm prune --omit=dev && \
-    rm -rf ./data/*
+    npm prune --omit=dev
 
 # second stage
 FROM node:22-alpine
