@@ -1,6 +1,6 @@
 # required configuration options
 name: Fusion
-version: "2024.12.0"
+version: "2024.12.1"
 slug: ha_fusion
 description: 一个现代化、易用且高性能的 Home Assistant 自定义仪表盘
 arch:
