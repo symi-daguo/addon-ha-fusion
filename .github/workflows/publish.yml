@@ -10,6 +10,9 @@ jobs:
   publish:
     name: Publish
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v4
@@ -20,10 +23,15 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Get version
+        id: version
+        uses: home-assistant/version@master
+
       - name: Publish
         uses: home-assistant/builder@master
         with:
           args: |
             --all \
             --target /data \
-            --docker-hub symi-daguo
+            --docker-hub symi-daguo \
+            --version ${{ steps.version.outputs.version }}

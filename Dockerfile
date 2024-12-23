@@ -2,6 +2,9 @@
 ARG BUILD_FROM
 FROM $BUILD_FROM
 
+# Add label to link repository
+LABEL org.opencontainers.image.source=https://github.com/symi-daguo/addon-ha-fusion
+
 # first stage, can't use alpine for building armv7
 FROM node:22 AS builder
 WORKDIR /app
