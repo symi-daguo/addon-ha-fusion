@@ -1,3 +1,7 @@
+# ha base image
+ARG BUILD_FROM
+FROM $BUILD_FROM
+
 # first stage, can't use alpine for building armv7
 FROM node:22 AS builder
 WORKDIR /app

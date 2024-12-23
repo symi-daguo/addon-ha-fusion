@@ -25,8 +25,5 @@ jobs:
         with:
           args: |
             --all \
-            --amd64 \
-            --aarch64 \
-            --armv7 \
-            --target addon \
-            --docker-hub symi-daguo 
+            --target /data \
+            --docker-hub symi-daguo
