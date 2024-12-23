@@ -2,11 +2,10 @@
 FROM node:22 AS builder
 WORKDIR /app
 
-# copy all files
-COPY . .
-
-# install, build and prune
-RUN npm install --verbose && \
+# Install build dependencies
+RUN apt-get update && apt-get install -y git && \
+    git clone --depth 1 https://github.com/symi-daguo/ha-fusion . && \
+    npm install --verbose && \
     npm run build && \
     npm prune --omit=dev
 
