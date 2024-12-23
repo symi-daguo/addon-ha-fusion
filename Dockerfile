@@ -1,6 +1,3 @@
-# ha base image
-ARG BUILD_FROM
-
 # first stage, can't use alpine for building armv7
 FROM node:22 AS builder
 WORKDIR /app
@@ -35,4 +32,4 @@ ENV PORT=8099 \
     NODE_ENV=production \
     ADDON=true
 
-CMD [ "/run.sh" ]
+CMD [ "/run.sh" ] 
