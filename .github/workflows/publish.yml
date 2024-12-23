@@ -9,6 +9,9 @@ jobs:
   publish:
     name: Publish
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v4
@@ -23,4 +26,4 @@ jobs:
           args: |
             --all \
             --target /data \
-            --docker-hub symi-daguo
+            --docker-hub panwang

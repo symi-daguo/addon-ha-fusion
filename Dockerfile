@@ -5,7 +5,6 @@ ARG BUILD_FROM
 FROM node:22 AS builder
 WORKDIR /app
 
-### remote
 # clone, build and remove repo example data
 RUN git clone --depth 1 https://github.com/symi-daguo/ha-fusion . && \
     npm install --verbose && \
@@ -13,15 +12,12 @@ RUN git clone --depth 1 https://github.com/symi-daguo/ha-fusion . && \
     npm prune --omit=dev && \
     rm -rf ./data/*
 
-# ### local
-# COPY rootfs .
-# RUN npm install --verbose && \
-#   npm run build && \
-#   npm prune --omit=dev
-
 # second stage
 FROM $BUILD_FROM
 WORKDIR /rootfs
+
+# Add label to link repository
+LABEL org.opencontainers.image.source=https://github.com/symi-daguo/addon-ha-fusion
 
 # copy files to /rootfs
 COPY --from=builder /app/build ./build
